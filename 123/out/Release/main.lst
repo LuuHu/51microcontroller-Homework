@@ -1,0 +1,614 @@
+C51 COMPILER V9.60.0.0   MAIN                                                              12/23/2020 11:38:09 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\out\Release\main.o
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.exe .\SRC\MAIN.C PRINT(.\out\Release\main.lst) OMF2 TABS(4) CODE NOCOND SYMB
+                    -OLS OPTIMIZE(8,SPEED) SMALL ROM(LARGE) INCDIR(.\src) DEFINE(__UVISION_VERSION=526) OBJECT(.\out\Release\main.o)
+
+line level    source
+
+   1          
+   2          /*
+   3          #include <reg52.h>
+   4          #include <STDIO.H>
+   5          #include <STRING.H>
+   6          #include <cha.h>
+   7          
+   8          #define uchar unsigned char
+   9          #define uint unsigned int
+  10          #define OneLine 32 //液晶每行的宽�?
+  11          
+  12          uchar UART_buff, table[3];
+  13          uint cot = 0, Send_ed = 0, i, ix, io, pp, t;
+  14          
+  15          #define LCD_Outcode P0
+  16          sbit LCD_CD = P1 ^ 7;
+  17          sbit LCD_RD = P1 ^ 6;
+  18          sbit LCD_WR = P1 ^ 5;
+  19          sbit LCD_RST = P3 ^ 4;
+  20          sbit red = P3 ^ 2;
+  21          sbit blue = P3 ^ 3;
+  22          
+  23          void delay(ms)
+  24          {
+  25              unsigned int q, w;
+  26              for (q = 0; q < ms; q++)
+  27                  for (w = 0; w < 255; w++)
+  28                      ;
+  29          }
+  30          
+  31          void WriteData(uchar dat)
+  32          {
+  33              LCD_CD = 0;
+  34              LCD_WR = 0;
+  35              LCD_Outcode = dat;
+  36              LCD_WR = 1;
+  37          }
+  38          
+  39          void WriteCommand(uchar cmd)
+  40          {
+  41              LCD_CD = 1;
+  42              LCD_WR = 0;
+  43              LCD_Outcode = cmd;
+  44              LCD_WR = 1;
+  45          }
+  46          
+  47          void WriteDC(uchar dat, uchar cmd)
+  48          {
+  49              WriteData(dat);
+  50              WriteCommand(cmd);
+  51          }
+  52          
+  53          void WriteDDC(uchar data1, uchar data2, uchar cmd)
+  54          {
+C51 COMPILER V9.60.0.0   MAIN                                                              12/23/2020 11:38:09 PAGE 2   
+
+  55              WriteData(data1);
+  56              WriteData(data2);
+  57              WriteCommand(cmd);
+  58          }
+  59          
+  60          void LCD_Init(void)
+  61          {
+  62              uchar data1, data2, cmd;
+  63              LCD_WR = 1;
+  64              LCD_RD = 1;
+  65              data1 = 0x00;
+  66              data2 = 0x00;
+  67              cmd = 0x40;
+  68              WriteDDC(data1, data2, cmd);
+  69              data1 = 0x20;
+  70              data2 = 0x00;
+  71              cmd = 0x41;
+  72              WriteDDC(data1, data2, cmd);
+  73              data1 = 0x08;
+  74              data2 = 0x00;
+  75              cmd = 0x42;
+  76              WriteDDC(data1, data2, cmd);
+  77              data1 = 0x20;
+  78              data2 = 0x00;
+  79              cmd = 0x43;
+  80              WriteDDC(data1, data2, cmd);
+  81              cmd = 0xa2;
+  82              WriteCommand(cmd);
+  83              cmd = 0x88;
+  84              WriteCommand(cmd);
+  85              cmd = 0x9e;
+  86              WriteCommand(cmd);
+  87          }
+  88          
+  89          void Write_Photo(row, rol, width, deep, idx)
+  90          {
+  91              uint address, Photolength;
+  92              uchar j, data1, data2, cmd;
+  93              Photolength = width * deep;
+  94              address = row * 256 + rol;
+  95              data1 = address;
+  96              data2 = address >> 8;
+  97              cmd = 0x24;
+  98              WriteDDC(data1, data2, cmd);
+  99              WriteCommand(0xb0);
+ 100              for (i = 0; i < Photolength; i++)
+ 101              {
+ 102                  WriteData(Photo[idx * 4][i]);
+ 103                  j++;
+ 104                  if (j == width)
+ 105                  {
+ 106                      WriteCommand(0xb2);
+ 107                      address = address + 32;
+ 108                      data1 = address;
+ 109                      data2 = address >> 8;
+ 110                      cmd = 0x24;
+ 111                      WriteDDC(data1, data2, cmd);
+ 112                      j = 0;
+ 113                      WriteCommand(0xb0);
+ 114                  }
+ 115              }
+ 116              WriteCommand(0xb2);
+C51 COMPILER V9.60.0.0   MAIN                                                              12/23/2020 11:38:09 PAGE 3   
+
+ 117          }
+ 118          
+ 119          void action(iod)
+ 120          {
+ 121              LCD_RST = 0;
+ 122              delay(200);
+ 123              LCD_RST = 1;
+ 124              LCD_Init();
+ 125              t = 0;
+ 126              for (io = 0; io < ix; io++)
+ 127              {
+ 128                  t += num_cha[io];
+ 129              }
+ 130              for (pp = 0; pp < num_cha[ix]; pp++)
+ 131              {
+ 132                  Write_Photo(3, 8 + 4 * pp, 4, 32, pp + t);
+ 133                  delay(1);
+ 134              }
+ 135              if (ix == 0)
+ 136              {
+ 137                  red = 1;
+ 138                  blue = 1;
+ 139              }
+ 140              else if (ix == 1)
+ 141              {
+ 142                  red = 1;
+ 143                  blue = 0;
+ 144              }
+ 145              else if (ix == 2)
+ 146              {
+ 147                  red = 0;
+ 148                  blue = 1;
+ 149              }
+ 150              else if (ix <= 16)
+ 151              {
+ 152                  red = 0;
+ 153                  blue = 0;
+ 154                  P2 = ix - 3 + 240;
+ 155              }
+ 156              else
+ 157              {
+ 158                  red = 0;
+ 159                  blue = 0;
+ 160                  P2 = 15 + (ix - 17) * 15;
+ 161              }
+ 162          }
+ 163          void main(void)
+ 164          {
+ 165              SCON = 0x50;
+ 166              TMOD = 0x20;
+ 167              TH1 = 0xFD;
+ 168              TL1 = 0xFD;
+ 169              TR1 = 1;
+ 170              ES = 1;
+ 171              EA = 1;
+ 172              LCD_RST = 1;
+ 173              red = 0;
+ 174              blue = 0;
+ 175              while (1)
+ 176              {
+ 177                  if (Send_ed == 1)
+ 178                  {
+C51 COMPILER V9.60.0.0   MAIN                                                              12/23/2020 11:38:09 PAGE 4   
+
+ 179                      Send_ed = 0;
+ 180                      if (strstr(table, "000") != NULL)
+ 181                      {
+ 182                          ix = 0;
+ 183                          action(ix);
+ 184                      }
+ 185                      else if (strstr(table, "001") != NULL)
+ 186                      {
+ 187                          ix = 1;
+ 188                          action(ix);
+ 189                      }
+ 190                      else if (strstr(table, "002") != NULL)
+ 191                      {
+ 192                          ix = 2;
+ 193                          action(ix);
+ 194                      }
+ 195                      else if (strstr(table, "L01") != NULL)
+ 196                      {
+ 197                          ix = 3;
+ 198                          action(ix);
+ 199                      }
+ 200                      else if (strstr(table, "L02") != NULL)
+ 201                      {
+ 202                          ix = 4;
+ 203                          action(ix);
+ 204                      }
+ 205                      else if (strstr(table, "L03") != NULL)
+ 206                      {
+ 207                          ix = 5;
+ 208                          action(ix);
+ 209                      }
+ 210                      else if (strstr(table, "L04") != NULL)
+ 211                      {
+ 212                          ix = 6;
+ 213                          action(ix);
+ 214                      }
+ 215                      else if (strstr(table, "L05") != NULL)
+ 216                      {
+ 217                          ix = 7;
+ 218                          action(ix);
+ 219                      }
+ 220                      else if (strstr(table, "L06") != NULL)
+ 221                      {
+ 222                          ix = 8;
+ 223                          action(ix);
+ 224                      }
+ 225                      else if (strstr(table, "L07") != NULL)
+ 226                      {
+ 227                          ix = 9;
+ 228                          action(ix);
+ 229                      }
+ 230                      else if (strstr(table, "L08") != NULL)
+ 231                      {
+ 232                          ix = 10;
+ 233                          action(ix);
+ 234                      }
+ 235                      else if (strstr(table, "L09") != NULL)
+ 236                      {
+ 237                          ix = 11;
+ 238                          action(ix);
+ 239                      }
+ 240                      else if (strstr(table, "L10") != NULL)
+C51 COMPILER V9.60.0.0   MAIN                                                              12/23/2020 11:38:09 PAGE 5   
+
+ 241                      {
+ 242                          ix = 12;
+ 243                          action(ix);
+ 244                      }
+ 245                      else if (strstr(table, "L11") != NULL)
+ 246                      {
+ 247                          ix = 13;
+ 248                          action(ix);
+ 249                      }
+ 250                      else if (strstr(table, "L12") != NULL)
+ 251                      {
+ 252                          ix = 14;
+ 253                          action(ix);
+ 254                      }
+ 255                      else if (strstr(table, "L13") != NULL)
+ 256                      {
+ 257                          ix = 15;
+ 258                          action(ix);
+ 259                      }
+ 260                      else if (strstr(table, "L14") != NULL)
+ 261                      {
+ 262                          ix = 16;
+ 263                          action(ix);
+ 264                      }
+ 265                      else if (strstr(table, "S01") == NULL)
+ 266                      {
+ 267                          ix = 17;
+ 268                          action(ix);
+ 269                      }
+ 270                      else if (strstr(table, "S02") != NULL)
+ 271                      {
+ 272                          ix = 18;
+ 273                          action(ix);
+ 274                      }
+ 275                      else if (strstr(table, "S03") != NULL)
+ 276                      {
+ 277                          ix = 19;
+ 278                          action(ix);
+ 279                      }
+ 280                      else if (strstr(table, "S04") != NULL)
+ 281                      {
+ 282                          ix = 20;
+ 283                          action(ix);
+ 284                      }
+ 285                      else if (strstr(table, "S05") != NULL)
+ 286                      {
+ 287                          ix = 21;
+ 288                          action(ix);
+ 289                      }
+ 290                      else if (strstr(table, "S06") != NULL)
+ 291                      {
+ 292                          ix = 22;
+ 293                          action(ix);
+ 294                      }
+ 295                      else if (strstr(table, "S07") != NULL)
+ 296                      {
+ 297                          ix = 23;
+ 298                          action(ix);
+ 299                      }
+ 300                      else if (strstr(table, "S08") != NULL)
+ 301                      {
+ 302                          ix = 24;
+C51 COMPILER V9.60.0.0   MAIN                                                              12/23/2020 11:38:09 PAGE 6   
+
+ 303                          action(ix);
+ 304                      }
+ 305                      else if (strstr(table, "S09") != NULL)
+ 306                      {
+ 307                          ix = 25;
+ 308                          action(ix);
+ 309                      }
+ 310                      else if (strstr(table, "S10") != NULL)
+ 311                      {
+ 312                          ix = 26;
+ 313                          action(ix);
+ 314                      }
+ 315                      else if (strstr(table, "S11") != NULL)
+ 316                      {
+ 317                          ix = 27;
+ 318                          action(ix);
+ 319                      }
+ 320                      else if (strstr(table, "S12") != NULL)
+ 321                      {
+ 322                          ix = 28;
+ 323                          action(ix);
+ 324                      }
+ 325                      else if (strstr(table, "S13") != NULL)
+ 326                      {
+ 327                          ix = 29;
+ 328                          action(ix);
+ 329                      }
+ 330                      else if (strstr(table, "S14") != NULL)
+ 331                      {
+ 332                          ix = 30;
+ 333                          action(ix);
+ 334                      }
+ 335                  }
+ 336                  delay(2);
+ 337              }
+ 338          }
+ 339          
+ 340          void ser(void) interrupt 4
+ 341          {
+ 342              RI = 0;
+ 343              table[cot] = SBUF;
+ 344              cot++;
+ 345              if (cot == 3)
+ 346              {
+ 347                  cot = 0;
+ 348                  Send_ed = 1;
+ 349              }
+ 350          }
+ 351          */
+ 352          
+ 353          #include <reg52.h>
+ 354          #include <STDIO.H>
+ 355          #include <STRING.H>
+ 356          #include <cha.h>
+ 357          
+ 358          #define uchar unsigned char
+ 359          #define uint unsigned int
+ 360          #define OneLine 32 //液晶每行的宽�?
+ 361          
+ 362          uchar UART_buff, table[3];
+ 363          uint cot = 0, Send_ed = 0, i, ix, io, pp, t;
+ 364          
+C51 COMPILER V9.60.0.0   MAIN                                                              12/23/2020 11:38:09 PAGE 7   
+
+ 365          int ccc[] = {0, 1, 2, 3, 17};
+ 366          int bb = 0, m = 0;;
+*** ERROR C141 IN LINE 366 OF .\SRC\MAIN.C: syntax error near ';', expected 'hdata'
+ 367          #define LCD_Outcode P0
+ 368          sbit LCD_CD = P1 ^ 7;
+ 369          sbit LCD_RD = P1 ^ 6;
+ 370          sbit LCD_WR = P1 ^ 5;
+ 371          sbit LCD_RST = P3 ^ 4;
+ 372          sbit red = P3 ^ 2;
+ 373          sbit blue = P3 ^ 3;
+ 374          
+ 375          void delay(ms)
+ 376          {
+ 377   1          unsigned int q, w;
+ 378   1          for (q = 0; q < ms; q++)
+ 379   1              for (w = 0; w < 255; w++)
+ 380   1                  ;
+ 381   1      }
+ 382          
+ 383          void WriteData(uchar dat)
+ 384          {
+ 385   1          LCD_CD = 0;
+ 386   1          LCD_WR = 0;
+ 387   1          LCD_Outcode = dat;
+ 388   1          LCD_WR = 1;
+ 389   1      }
+ 390          
+ 391          void WriteCommand(uchar cmd)
+ 392          {
+ 393   1          LCD_CD = 1;
+ 394   1          LCD_WR = 0;
+ 395   1          LCD_Outcode = cmd;
+ 396   1          LCD_WR = 1;
+ 397   1      }
+ 398          
+ 399          void WriteDC(uchar dat, uchar cmd)
+ 400          {
+ 401   1          WriteData(dat);
+ 402   1          WriteCommand(cmd);
+ 403   1      }
+ 404          
+ 405          void WriteDDC(uchar data1, uchar data2, uchar cmd)
+ 406          {
+ 407   1          WriteData(data1);
+ 408   1          WriteData(data2);
+ 409   1          WriteCommand(cmd);
+ 410   1      }
+ 411          
+ 412          void LCD_Init(void)
+ 413          {
+ 414   1          uchar data1, data2, cmd;
+ 415   1          LCD_WR = 1;
+ 416   1          LCD_RD = 1;
+ 417   1          data1 = 0x00;
+ 418   1          data2 = 0x00;
+ 419   1          cmd = 0x40;
+ 420   1          WriteDDC(data1, data2, cmd);
+ 421   1          data1 = 0x20;
+ 422   1          data2 = 0x00;
+ 423   1          cmd = 0x41;
+ 424   1          WriteDDC(data1, data2, cmd);
+ 425   1          data1 = 0x08;
+C51 COMPILER V9.60.0.0   MAIN                                                              12/23/2020 11:38:09 PAGE 8   
+
+ 426   1          data2 = 0x00;
+ 427   1          cmd = 0x42;
+ 428   1          WriteDDC(data1, data2, cmd);
+ 429   1          data1 = 0x20;
+ 430   1          data2 = 0x00;
+ 431   1          cmd = 0x43;
+ 432   1          WriteDDC(data1, data2, cmd);
+ 433   1          cmd = 0xa2;
+ 434   1          WriteCommand(cmd);
+ 435   1          cmd = 0x88;
+ 436   1          WriteCommand(cmd);
+ 437   1          cmd = 0x9e;
+ 438   1          WriteCommand(cmd);
+ 439   1      }
+ 440          
+ 441          void Write_Photo(row, rol, width, deep, idx)
+ 442          {
+ 443   1          uint address, Photolength;
+ 444   1          uchar j, data1, data2, cmd;
+ 445   1          Photolength = width * deep;
+ 446   1          address = row * 256 + rol;
+ 447   1          data1 = address;
+ 448   1          data2 = address >> 8;
+ 449   1          cmd = 0x24;
+ 450   1          WriteDDC(data1, data2, cmd);
+ 451   1          WriteCommand(0xb0);
+ 452   1          for (i = 0; i < Photolength; i++)
+ 453   1          {
+ 454   2              WriteData(Photo[idx * 4][i]);
+ 455   2              j++;
+ 456   2              if (j == width)
+ 457   2              {
+ 458   3                  WriteCommand(0xb2);
+ 459   3                  address = address + 32;
+ 460   3                  data1 = address;
+ 461   3                  data2 = address >> 8;
+ 462   3                  cmd = 0x24;
+ 463   3                  WriteDDC(data1, data2, cmd);
+ 464   3                  j = 0;
+ 465   3                  WriteCommand(0xb0);
+ 466   3              }
+ 467   2          }
+ 468   1          WriteCommand(0xb2);
+ 469   1      }
+ 470          
+ 471          void Clear(row, rol, width, deep)
+ 472          {
+ 473   1          uint address, Photolength;
+ 474   1          uchar j, data1, data2, cmd;
+ 475   1          Photolength = width * deep;
+ 476   1          address = row * 256 + rol;
+ 477   1          data1 = address;
+ 478   1          data2 = address >> 8;
+ 479   1          cmd = 0x24;
+ 480   1          WriteDDC(data1, data2, cmd);
+ 481   1          WriteCommand(0xb0);
+ 482   1          for (i = 0; i < Photolength; i++)
+ 483   1          {
+ 484   2              WriteData(clear[i]);
+ 485   2              j++;
+ 486   2              if (j == width)
+ 487   2              {
+C51 COMPILER V9.60.0.0   MAIN                                                              12/23/2020 11:38:09 PAGE 9   
+
+ 488   3                  WriteCommand(0xb2);
+ 489   3                  address = address + 32;
+ 490   3                  data1 = address;
+ 491   3                  data2 = address >> 8;
+ 492   3                  cmd = 0x24;
+ 493   3                  WriteDDC(data1, data2, cmd);
+ 494   3                  j = 0;
+ 495   3                  WriteCommand(0xb0);
+ 496   3              }
+ 497   2          }
+ 498   1          WriteCommand(0xb2);
+ 499   1      }
+ 500          
+ 501          void action(iod)
+ 502          {
+ 503   1          LCD_RST = 1;
+ 504   1          delay(20);
+ 505   1          LCD_RST = 0;
+ 506   1          delay(20);
+ 507   1          LCD_Init();
+ 508   1          t = 0;
+ 509   1          for (io = 0; io < iod; io++)
+ 510   1          {
+ 511   2              t += num_cha[io];
+ 512   2          }
+ 513   1          for (pp = 0; pp < num_cha[iod-1]; pp++)
+ 514   1          {
+ 515   2              Clear(3, 8 + 4 * pp, 4, 32);
+ 516   2              delay(1);
+ 517   2          }
+ 518   1          for (pp = 0; pp < num_cha[iod]; pp++)
+ 519   1          {
+ 520   2              Write_Photo(3, 8 + 4 * pp, 4, 32, pp + t);
+ 521   2              delay(1);
+ 522   2          }
+ 523   1          if (iod == 0)
+ 524   1          {
+ 525   2              red = 1;
+ 526   2              blue = 1;
+ 527   2              P2 = 255;
+ 528   2          }
+ 529   1          else if (iod == 1)
+ 530   1          {
+ 531   2              red = 1;
+ 532   2              blue = 0;
+ 533   2          }
+ 534   1          else if (iod == 2)
+ 535   1          {
+ 536   2              red = 0;
+ 537   2              blue = 1;
+ 538   2          }
+ 539   1          else if (iod <= 16)
+ 540   1          {
+ 541   2              red = 0;
+ 542   2              blue = 0;
+ 543   2              P2 = iod - 3 + 240;
+ 544   2          }
+ 545   1          else
+ 546   1          {
+ 547   2              red = 0;
+ 548   2              blue = 0;
+ 549   2              P2 = 15 + (iod - 17) * 15;
+C51 COMPILER V9.60.0.0   MAIN                                                              12/23/2020 11:38:09 PAGE 10  
+
+ 550   2          }
+ 551   1      }
+ 552          
+ 553          void main(void)
+ 554          {
+ 555   1          SCON = 0x50;
+ 556   1          TMOD = 0x20;
+ 557   1          TH1 = 0xFD;
+ 558   1          TL1 = 0xFD;
+ 559   1          TR1 = 1;
+ 560   1          ES = 1;
+ 561   1          EA = 1;
+ 562   1          red = 1;
+ 563   1          blue = 1;
+ 564   1          bb = 1;
+ 565   1          while (1)
+ 566   1          {
+ 567   2              while (bb == 1)
+ 568   2              delay(1);
+ 569   2                  ;
+ 570   2              bb = 1;
+ 571   2              action(ccc[m++]);
+ 572   2          }
+ 573   1      }
+ 574          
+ 575          void ser(void) interrupt 4
+ 576          {
+ 577   1          RI = 0;
+ 578   1          cot++;
+ 579   1          if (cot == 3)
+ 580   1          {
+ 581   2              bb = 0;
+ 582   2          }
+ 583   1      }
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  1 ERROR(S)

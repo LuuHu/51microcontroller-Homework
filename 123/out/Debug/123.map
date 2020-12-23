@@ -1,0 +1,278 @@
+LX51 LINKER/LOCATER V4.66.97.0                                                          12/23/2020  11:43:54  PAGE 1
+
+
+LX51 LINKER/LOCATER V4.66.97.0, INVOKED BY:
+C:\KEIL_V5\C51\BIN\LX51.EXE .\OUT\DEBUG\MAIN.O TO .\OUT\DEBUG\123 PRINT (.\out\Debug\123.map) REMOVEUNUSED
+
+
+CPU MODE:     8051 MODE
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  .\OUT\DEBUG\MAIN.O (MAIN)
+         COMMENT TYPE 0: C51 V9.60.0.0
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C_STARTUP)
+         COMMENT TYPE 1: A51 / ASM51 Assembler
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C?IMUL)
+         COMMENT TYPE 1: A51 / ASM51 Assembler
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C_INIT)
+         COMMENT TYPE 1: A51 / ASM51 Assembler
+
+
+ACTIVE MEMORY CLASSES OF MODULE:  .\OUT\DEBUG\123 (MAIN)
+
+BASE        START       END         USED      MEMORY CLASS
+==========================================================
+C:000000H   C:000000H   C:00FFFFH   000466H   CODE
+I:000000H   I:000000H   I:00007FH   000078H   DATA
+C:000000H   C:000000H   C:00FFFFH   003400H   CONST
+I:000000H   I:000000H   I:0000FFH   000001H   IDATA
+
+
+MEMORY MAP OF MODULE:  .\OUT\DEBUG\123 (MAIN)
+
+
+START     STOP      LENGTH    ALIGN  RELOC    MEMORY CLASS   SEGMENT NAME
+=========================================================================
+
+* * * * * * * * * * *   D A T A   M E M O R Y   * * * * * * * * * * * * *
+000000H   000007H   000008H   ---    AT..     DATA           "REG BANK 0"
+000008H   000065H   00005EH   BYTE   UNIT     DATA           ?DT?MAIN
+000066H   000077H   000012H   BYTE   UNIT     DATA           _DATA_GROUP_
+000078H   000078H   000001H   BYTE   UNIT     IDATA          ?STACK
+
+* * * * * * * * * * *   C O D E   M E M O R Y   * * * * * * * * * * * * *
+000000H   000002H   000003H   ---    OFFS..   CODE           ?CO??C_STARTUP?0
+000003H   000021H   00001FH   BYTE   UNIT     CODE           ?PR?_DELAY?MAIN
+000022H   000022H   000001H   ---    ---      **GAP**
+000023H   000025H   000003H   BYTE   OFFS..   CODE           ?MAIN?00023
+000026H   000162H   00013DH   BYTE   UNIT     CODE           ?PR?_ACTION?MAIN
+000163H   000203H   0000A1H   BYTE   UNIT     CODE           ?PR?_WRITE_PHOTO?MAIN
+000204H   000298H   000095H   BYTE   UNIT     CODE           ?PR?_CLEAR?MAIN
+000299H   000324H   00008CH   BYTE   UNIT     CODE           ?C_C51STARTUP
+000325H   000382H   00005EH   BYTE   UNIT     CODE           ?C_INITSEG
+000383H   0003CCH   00004AH   BYTE   UNIT     CODE           ?PR?MAIN?MAIN
+0003CDH   00040AH   00003EH   BYTE   UNIT     CODE           ?PR?LCD_INIT?MAIN
+00040BH   000427H   00001DH   BYTE   UNIT     CODE           ?PR?SER?MAIN
+000428H   00043BH   000014H   BYTE   UNIT     CODE           ?PR?_WRITEDDC?MAIN
+00043CH   00044DH   000012H   BYTE   UNIT     CODE           ?C?LIB_CODE
+00044EH   00045DH   000010H   BYTE   UNIT     CODE           ?PR?_WRITEDATA?MAIN
+00045EH   000466H   000009H   BYTE   UNIT     CODE           ?PR?_WRITECOMMAND?MAIN
+000467H   003866H   003400H   BYTE   UNIT     CONST          ?CO?MAIN
+
+* * * * * * * * *   R E M O V E D     S E G M E N T S   * * * * * * * *
+   *DEL*:           00000AH   BYTE   UNIT     CODE           ?PR?_WRITEDC?MAIN
+
+
+
+OVERLAY MAP OF MODULE:   .\OUT\DEBUG\123 (MAIN)
+LX51 LINKER/LOCATER V4.66.97.0                                                        12/23/2020  11:43:54  PAGE 2
+
+
+
+
+FUNCTION/MODULE              BIT_GROUP   DATA_GROUP 
+--> CALLED FUNCTION/MODULE  START  STOP  START  STOP
+====================================================
+SER/MAIN                    ----- -----  ----- -----
+
+*** NEW ROOT **************
+
+?C_C51STARTUP               ----- -----  ----- -----
+  +--> MAIN/MAIN
+  +--> ?C_INITSEG
+
+MAIN/MAIN                   ----- -----  ----- -----
+  +--> _DELAY/MAIN
+  +--> _ACTION/MAIN
+
+_DELAY/MAIN                 ----- -----  ----- -----
+
+_ACTION/MAIN                ----- -----  0066H 0067H
+  +--> _DELAY/MAIN
+  +--> LCD_INIT/MAIN
+  +--> _CLEAR/MAIN
+  +--> _WRITE_PHOTO/MAIN
+
+LCD_INIT/MAIN               ----- -----  ----- -----
+  +--> _WRITEDDC/MAIN
+  +--> _WRITECOMMAND/MAIN
+
+_WRITEDDC/MAIN              ----- -----  ----- -----
+  +--> _WRITEDATA/MAIN
+  +--> _WRITECOMMAND/MAIN
+
+_WRITEDATA/MAIN             ----- -----  ----- -----
+
+_WRITECOMMAND/MAIN          ----- -----  ----- -----
+
+_CLEAR/MAIN                 ----- -----  0068H 0075H
+  +--> _WRITEDDC/MAIN
+  +--> _WRITECOMMAND/MAIN
+  +--> _WRITEDATA/MAIN
+
+_WRITE_PHOTO/MAIN           ----- -----  0068H 0077H
+  +--> _WRITEDDC/MAIN
+  +--> _WRITECOMMAND/MAIN
+  +--> _WRITEDATA/MAIN
+
+?C_INITSEG                  ----- -----  ----- -----
+
+
+
+PUBLIC SYMBOLS OF MODULE:  .\OUT\DEBUG\123 (MAIN)
+
+
+      VALUE       CLASS    TYPE      PUBLIC SYMBOL NAME
+      =================================================
+      00000068H   DATA     BYTE      ?_Clear?BYTE
+      00000068H   DATA     BYTE      ?_Write_Photo?BYTE
+      00000000H   NUMBER   ---       ?C?CODESEG
+      0100043CH   CODE     ---       ?C?IMUL
+      00000000H   NUMBER   ---       ?C?XDATASEG
+      010002E0H   CODE     ---       ?C_START
+      01000000H   CODE     ---       ?C_STARTUP
+      01000026H   CODE     ---       _action
+      01000204H   CODE     ---       _Clear
+LX51 LINKER/LOCATER V4.66.97.0                                                        12/23/2020  11:43:54  PAGE 3
+
+
+      01000003H   CODE     ---       _delay
+      01000163H   CODE     ---       _Write_Photo
+      0100045EH   CODE     ---       _WriteCommand
+      01000455H   CODE     ---       _WriteData
+*DEL*:00000000H   CODE     ---       _WriteDC
+      0100042DH   CODE     ---       _WriteDDC
+      00000018H   DATA     INT       bb
+      0000000BH   DATA     ---       ccc
+      010037E7H   CONST    ---       clear
+      0000001AH   DATA     WORD      cot
+      00000060H   DATA     WORD      i
+      0000001CH   DATA     WORD      io
+      0000005EH   DATA     WORD      ix
+      010003CDH   CODE     ---       LCD_Init
+      00000062H   DATA     INT       m
+      01000383H   CODE     ---       main
+      0000001EH   DATA     ---       num_cha
+      01000467H   CONST    ---       Photo
+      0000005CH   DATA     WORD      pp
+      00000015H   DATA     WORD      Send_ed
+      0100040BH   CODE     ---       ser
+      00000064H   DATA     WORD      t
+      00000008H   DATA     ---       table
+      00000017H   DATA     BYTE      UART_buff
+
+
+
+SYMBOL TABLE OF MODULE:  .\OUT\DEBUG\123 (MAIN)
+
+      VALUE       REP       CLASS    TYPE      SYMBOL NAME
+      ====================================================
+      ---         MODULE    ---      ---       MAIN
+      00000064H   PUBLIC    DATA     WORD      t
+      00000062H   PUBLIC    DATA     INT       m
+      00000060H   PUBLIC    DATA     WORD      i
+      0000005EH   PUBLIC    DATA     WORD      ix
+      0000005CH   PUBLIC    DATA     WORD      pp
+      0000001EH   PUBLIC    DATA     ---       num_cha
+      0000001CH   PUBLIC    DATA     WORD      io
+      0000001AH   PUBLIC    DATA     WORD      cot
+      00000018H   PUBLIC    DATA     INT       bb
+      00000017H   PUBLIC    DATA     BYTE      UART_buff
+      00000015H   PUBLIC    DATA     WORD      Send_ed
+      0000000BH   PUBLIC    DATA     ---       ccc
+      00000008H   PUBLIC    DATA     ---       table
+      010037E7H   PUBLIC    CONST    ---       clear
+      01000467H   PUBLIC    CONST    ---       Photo
+      0100040BH   PUBLIC    CODE     ---       ser
+      01000383H   PUBLIC    CODE     ---       main
+      01000026H   PUBLIC    CODE     ---       _action
+      00000068H   PUBLIC    DATA     BYTE      ?_Clear?BYTE
+      01000204H   PUBLIC    CODE     ---       _Clear
+      00000068H   PUBLIC    DATA     BYTE      ?_Write_Photo?BYTE
+      01000163H   PUBLIC    CODE     ---       _Write_Photo
+      010003CDH   PUBLIC    CODE     ---       LCD_Init
+      0100042DH   PUBLIC    CODE     ---       _WriteDDC
+      0100045EH   PUBLIC    CODE     ---       _WriteCommand
+      01000455H   PUBLIC    CODE     ---       _WriteData
+      01000003H   PUBLIC    CODE     ---       _delay
+
+      01000003H   BLOCK     CODE     ---       LVL=0
+      01000003H   BLOCK     CODE     NEAR LAB  LVL=1
+      00000004H   SYMBOL    DATA     VOID      q
+      00000002H   SYMBOL    DATA     VOID      w
+      ---         BLOCKEND  ---      ---       LVL=1
+LX51 LINKER/LOCATER V4.66.97.0                                                        12/23/2020  11:43:54  PAGE 4
+
+
+      ---         BLOCKEND  ---      ---       LVL=0
+
+      0100044EH   BLOCK     CODE     ---       LVL=0
+      ---         BLOCKEND  ---      ---       LVL=0
+
+      01000455H   BLOCK     CODE     ---       LVL=0
+      ---         BLOCKEND  ---      ---       LVL=0
+
+      0100045EH   BLOCK     CODE     ---       LVL=0
+      ---         BLOCKEND  ---      ---       LVL=0
+
+      01000428H   BLOCK     CODE     ---       LVL=0
+      ---         BLOCKEND  ---      ---       LVL=0
+
+      0100042DH   BLOCK     CODE     ---       LVL=0
+      ---         BLOCKEND  ---      ---       LVL=0
+
+      010003CDH   BLOCK     CODE     ---       LVL=0
+      010003CDH   BLOCK     CODE     NEAR LAB  LVL=1
+      00000006H   SYMBOL    DATA     VOID      data1
+      00000005H   SYMBOL    DATA     VOID      data2
+      00000004H   SYMBOL    DATA     VOID      cmd
+      ---         BLOCKEND  ---      ---       LVL=1
+      ---         BLOCKEND  ---      ---       LVL=0
+
+      01000163H   BLOCK     CODE     ---       LVL=0
+      0100016FH   BLOCK     CODE     NEAR LAB  LVL=1
+      00000072H   SYMBOL    DATA     VOID      address
+      00000074H   SYMBOL    DATA     VOID      Photolength
+      00000076H   SYMBOL    DATA     VOID      j
+      00000077H   SYMBOL    DATA     VOID      data1
+      00000002H   SYMBOL    DATA     VOID      data2
+      00000001H   SYMBOL    DATA     VOID      cmd
+      ---         BLOCKEND  ---      ---       LVL=1
+      ---         BLOCKEND  ---      ---       LVL=0
+
+      01000204H   BLOCK     CODE     ---       LVL=0
+      01000210H   BLOCK     CODE     NEAR LAB  LVL=1
+      00000070H   SYMBOL    DATA     VOID      address
+      00000072H   SYMBOL    DATA     VOID      Photolength
+      00000074H   SYMBOL    DATA     VOID      j
+      00000075H   SYMBOL    DATA     VOID      data1
+      00000006H   SYMBOL    DATA     VOID      data2
+      00000002H   SYMBOL    DATA     VOID      cmd
+      ---         BLOCKEND  ---      ---       LVL=1
+      ---         BLOCKEND  ---      ---       LVL=0
+
+      01000026H   BLOCK     CODE     ---       LVL=0
+      ---         BLOCKEND  ---      ---       LVL=0
+
+      01000383H   BLOCK     CODE     ---       LVL=0
+      ---         BLOCKEND  ---      ---       LVL=0
+
+      0100040BH   BLOCK     CODE     ---       LVL=0
+      ---         BLOCKEND  ---      ---       LVL=0
+
+      ---         MODULE    ---      ---       ?C_STARTUP
+      01000000H   PUBLIC    CODE     ---       ?C_STARTUP
+
+      ---         MODULE    ---      ---       ?C?IMUL
+      0100043CH   PUBLIC    CODE     ---       ?C?IMUL
+
+      ---         MODULE    ---      ---       ?C_INIT
+      010002E0H   PUBLIC    CODE     ---       ?C_START
+
+LX51 LINKER/LOCATER V4.66.97.0                                                        12/23/2020  11:43:54  PAGE 5
+
+
+Program Size: data=121.0 xdata=0 const=13312 code=1126
+LX51 RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)
